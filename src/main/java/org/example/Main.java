@@ -10,8 +10,6 @@ import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
 
 public class Main {
@@ -21,7 +19,7 @@ public class Main {
         String fileName = "data.csv";
         List<Employee> list = parseCSV(columnMapping, fileName);
         String json = listToJson(list);
-//        writeString(json);
+        writeString(json);
     }
 
     private static void writeString(String json) {
@@ -34,20 +32,19 @@ public class Main {
     }
 
     private static String listToJson(List<Employee> list) {
-//        GsonBuilder builder = new GsonBuilder();
-//        Gson gson = builder.create();
         Gson gson = new GsonBuilder()
-//                .setPrettyPrinting()
+                .setPrettyPrinting()
                 .create();
-//        String json = gson.toJson(list);
-        Type listType = new TypeToken<List<Employee>>(){}.getType();
-        String json = gson.toJson(list, listType);
+        String json = gson.toJson(list);
+//        Type listType = new TypeToken<List<Employee>>(){}.getType();
+//        String json = gson.toJson(list, listType);
         System.out.println(json);
         return json;
     }
 
     private static List<Employee> parseCSV(String[] columnMapping, String fileName) {
         CsvToBean<Employee> csv = null;
+        List<Employee> staff = null;
         try (CSVReader csvReader = new CSVReader(new FileReader(fileName))) {
             ColumnPositionMappingStrategy<Employee> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Employee.class);
@@ -55,11 +52,12 @@ public class Main {
             csv = new CsvToBeanBuilder<Employee>(csvReader)
                     .withMappingStrategy(strategy)
                     .build();
-            csv.parse().forEach(System.out::println);
+            staff = csv.parse();
+            staff.forEach(System.out::println);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         assert csv != null;
-        return csv.parse();
+        return staff;
     }
 }
