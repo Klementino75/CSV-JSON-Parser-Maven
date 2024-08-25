@@ -24,7 +24,7 @@ public class Main {
         String fileName2 = "data.json";
         List<Employee> list = parseCSV(columnMapping, fileName);
         String json = listToJson(list);
-        writeString(json);
+        writeString(json, fileName2);
         json = String.valueOf(readToString(fileName2));
         jsonToList(json);
     }
@@ -56,12 +56,12 @@ public class Main {
 //        или так
 //        Type listType = new TypeToken<List<Employee>>(){}.getType();
 //        String json = gson.toJson(list, listType);
-        System.out.println(json);
+        System.out.println("\n" + json);
         return json;
     }
 
-    private static void writeString(String json) {
-        try (FileWriter file = new FileWriter("data.json")) {
+    private static void writeString(String json, String fileName2) {
+        try (FileWriter file = new FileWriter(fileName2)) {
             file.write(json);
             file.flush();
         } catch (Exception e) {
@@ -73,6 +73,7 @@ public class Main {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject;
         JSONArray array = null;
+        System.out.println();
         try {
             array = (JSONArray) parser.parse(new FileReader(fileName2));
             for (Object item : array) {
@@ -89,6 +90,7 @@ public class Main {
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Employee>>(){}.getType();
         List<Employee> list = gson.fromJson(json, listType);
+        System.out.println();
         list.forEach(System.out::println);
     }
 }
